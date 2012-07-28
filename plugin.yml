@@ -1,0 +1,49 @@
+name: StrendinChat
+main: ca.strendin.StrendinChat.StrendinChat
+version: 0.3
+website: https://github.com/MarkStrendin/StrendinChat
+author: Mark Strendin
+description: Basic chat related enhancements
+permissions:
+  strendinchat.admin:
+   description: Administrative functions for StrendinChat
+   default: op
+  strendinchat.invisible:
+   description: Does not send join announcements
+   default: false
+commands:  
+  motd:
+    aliases: []
+    description: Displays the message of the day
+    usage: |
+           /<command>
+  who:
+    aliases: [list,online]
+    description: Displays a list of the players currently online
+    usage: |
+           /<command>
+  strendinchat:
+    aliases: [sc]
+    description: Provides administrative functions for StrendinChat
+    usage: |
+           /<command>  
+  wave:
+    aliases: [waves]
+    description: Waves
+    usage: |
+           /<command>  
+  cry:
+    aliases: [cries]
+    description: Cries
+    usage: |
+           /<command>  
+  cheer:
+    aliases: [cheers]
+    description: Cheers
+    usage: |
+           /<command>  
+  em:
+    aliases: [me]
+    description: Emotes
+    usage: |
+           /<command>          
