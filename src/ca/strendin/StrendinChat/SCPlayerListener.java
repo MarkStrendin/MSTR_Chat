@@ -4,9 +4,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerLevelChangeEvent;
 
 public class SCPlayerListener  implements Listener {
     public static StrendinChat plugin;
@@ -22,7 +23,7 @@ public class SCPlayerListener  implements Listener {
     }
     
     @EventHandler
-    public  void onPlayerChat(PlayerChatEvent event) {
+    public  void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
         event.setCancelled(true);
         String strMessage = event.getMessage();
         String strSender = event.getPlayer().getDisplayName();
@@ -71,6 +72,14 @@ public class SCPlayerListener  implements Listener {
         sendToAllPlayers(ChatColor.YELLOW + event.getPlayer().getDisplayName() + " was kicked from the server");
     }
 
+    @EventHandler
+    public void onPlayerLevelChangeEvent(PlayerLevelChangeEvent event) {
+    	Player thisPlayer = event.getPlayer();
+    	if (thisPlayer.getLevel() > 25) {
+    		sendToAllPlayers(ChatColor.GRAY + thisPlayer.getDisplayName() + " has reached level " + thisPlayer.getLevel());
+    	}
+    }
+    
     /*
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
