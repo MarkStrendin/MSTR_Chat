@@ -75,8 +75,18 @@ public class SCPlayerListener  implements Listener {
     @EventHandler
     public void onPlayerLevelChangeEvent(PlayerLevelChangeEvent event) {
     	Player thisPlayer = event.getPlayer();
-    	if (thisPlayer.getLevel() > 25) {
-    		sendToAllPlayers(ChatColor.GRAY + thisPlayer.getDisplayName() + " has reached level " + thisPlayer.getLevel());
+    	if (thisPlayer.getLevel() >= 25) {
+    		String levelUpMessage = "*";
+    		levelUpMessage += ChatColor.GRAY + "" + ChatColor.ITALIC;
+    		levelUpMessage += thisPlayer.getDisplayName() + " has reached level ";
+    		if (thisPlayer.getLevel() >= 50) {
+    			levelUpMessage += ChatColor.GOLD;
+    		}
+    		if (thisPlayer.getLevel() >= 30) {
+    			levelUpMessage += ChatColor.BOLD;
+    		}
+    		levelUpMessage += thisPlayer.getLevel() + "!";
+    		sendToAllPlayers(levelUpMessage);
     	}
     }
     
