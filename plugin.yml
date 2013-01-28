@@ -15,35 +15,21 @@ commands:
   motd:
     aliases: []
     description: Displays the message of the day
-    usage: |
-           /<command>
   who:
     aliases: [list,online]
     description: Displays a list of the players currently online
-    usage: |
-           /<command>
   strendinchat:
     aliases: [sc]
     description: Provides administrative functions for StrendinChat
-    usage: |
-           /<command>  
   wave:
     aliases: [waves]
     description: Waves
-    usage: |
-           /<command>  
   cry:
     aliases: [cries]
-    description: Cries
-    usage: |
-           /<command>  
+    description: Cries 
   cheer:
     aliases: [cheers]
-    description: Cheers
-    usage: |
-           /<command>  
+    description: Cheers 
   em:
     aliases: [me]
-    description: Emotes
-    usage: |
-           /<command>          
+    description: Emotes        

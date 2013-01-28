@@ -1,5 +1,7 @@
 package ca.strendin.StrendinChat;
 
+import java.util.Random;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,17 +12,16 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLevelChangeEvent;
 
 public class SCPlayerListener  implements Listener {
+	private ChatColor opNameColour = ChatColor.RED;
+	private ChatColor nameColour = ChatColor.BLUE;
+	
     public static StrendinChat plugin;
     
     public SCPlayerListener(StrendinChat thisplugin) {
         plugin = thisplugin;
     }    
 
-    public void sendToAllPlayers(String message) {
-        for (Player thisPlayer : plugin.getServer().getOnlinePlayers()) {
-            thisPlayer.sendMessage(message);
-        }        
-    }
+    
     
     @EventHandler
     public  void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
@@ -28,18 +29,22 @@ public class SCPlayerListener  implements Listener {
         String strMessage = event.getMessage();
         String strSender = event.getPlayer().getDisplayName();
         
-        ChatColor uNameColor = ChatColor.BLUE;
+        ChatColor uNameColor = nameColour;
         
         if (event.getPlayer().isOp()) {
-            uNameColor = ChatColor.RED;                        
+            uNameColor = opNameColour;
         } 
         
-        String strAdjustedMessage = uNameColor + strSender + ChatColor.WHITE + ": " + strMessage;
+        if (event.getPlayer().getLevel() >= 50) {
+        	strSender = rainbowify(strSender);
+        }
         
-        sendToAllPlayers(strAdjustedMessage);
+        String strAdjustedMessage = uNameColor + strSender + ChatColor.WHITE + ": " + strMessage;        
+        
+        SCComms.sendToAllPlayers(strAdjustedMessage);
         
         
-        System.out.println(strSender + ": " + strMessage);
+        SCComms.sendConsole(event.getPlayer().getDisplayName() + ": " + event.getMessage());
     }
     
     @EventHandler
@@ -63,37 +68,82 @@ public class SCPlayerListener  implements Listener {
         
         // Send online player list
         SCComms.sendOnlineList(player);
+        
     }
+    
     
     @EventHandler
     public void onPlayerKick(PlayerKickEvent event) {
         // Hijack the message
         event.setLeaveMessage(null);
-        sendToAllPlayers(ChatColor.YELLOW + event.getPlayer().getDisplayName() + " was kicked from the server");
+        SCComms.sendToAllPlayers(ChatColor.YELLOW + event.getPlayer().getDisplayName() + " was kicked from the server");
     }
 
     @EventHandler
-    public void onPlayerLevelChangeEvent(PlayerLevelChangeEvent event) {
+    public void onPlayerLevelChangeEvent(PlayerLevelChangeEvent event) {    	
     	Player thisPlayer = event.getPlayer();
     	if (thisPlayer.getLevel() >= 25) {
-    		String levelUpMessage = "*";
-    		levelUpMessage += ChatColor.GRAY + "" + ChatColor.ITALIC;
-    		levelUpMessage += thisPlayer.getDisplayName() + " has reached level ";
-    		if (thisPlayer.getLevel() >= 50) {
-    			levelUpMessage += ChatColor.GOLD;
-    		}
-    		if (thisPlayer.getLevel() >= 30) {
-    			levelUpMessage += ChatColor.BOLD;
-    		}
-    		levelUpMessage += thisPlayer.getLevel() + "!";
-    		sendToAllPlayers(levelUpMessage);
+    		StringBuilder levelUpMessage = new StringBuilder();
+    		
+    		levelUpMessage.append("*");
+    		levelUpMessage.append(thisPlayer.getDisplayName());
+    		levelUpMessage.append(" has reached level ");
+    		levelUpMessage.append(thisPlayer.getLevel());
+    		levelUpMessage.append("!");
+    		
+    		SCComms.sendToAllPlayers(colorify(levelUpMessage.toString(),thisPlayer.getLevel()));
     	}
     }
     
-    /*
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerQuit(PlayerQuitEvent event) {
-    } 
-    */
+    
+    private static String colorify(String text, int level) {
+    	
+    	if (level >= 50) {
+    		return rainbowify(text);
+    	} else if (level >= 45) {
+    		return ChatColor.GOLD + "" + ChatColor.ITALIC + text;
+    	} else if (level >= 40) {
+    		return ChatColor.GREEN + "" + ChatColor.ITALIC + text;
+    	} else if (level >= 35) {
+    		return ChatColor.BLUE + "" + ChatColor.ITALIC +  text;
+    	} else if (level >= 30) {
+    		return ChatColor.AQUA + "" + ChatColor.ITALIC + text;
+    	} else {
+    		return ChatColor.GRAY + "" + ChatColor.ITALIC + text;    		
+    	}
+    	
+    }
+    
+    
+    private static String rainbowify(String thisText) {
+		ChatColor[] colors = {
+				ChatColor.RED,
+				ChatColor.GOLD, 
+				ChatColor.YELLOW,
+				ChatColor.GREEN,
+				ChatColor.BLUE,
+				ChatColor.DARK_PURPLE};
+		
+		StringBuilder returnMe = new StringBuilder();
+		int colourCounter = 0;
+		Random generator = new Random();
+		colourCounter = generator.nextInt(colors.length - 1);
+		
+		for (char thisChar : thisText.toCharArray()) {
+			returnMe.append(colors[colourCounter]);
+			returnMe.append(ChatColor.ITALIC);
+			returnMe.append(thisChar);
+			colourCounter++;
+			if (colourCounter > (colors.length - 1)) {
+				colourCounter = 0;
+			}
+		}		
+		
+		return returnMe.toString();
+		
+	}
+    
+    
+    
 
 }
